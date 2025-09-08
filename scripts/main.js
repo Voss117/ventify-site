@@ -6,9 +6,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const navToggle = document.getElementById('nav-toggle');
   const navLinks = document.querySelector('.nav-links');
   if (navToggle && navLinks) {
-    navToggle.addEventListener('click', () => {
-      const isHidden = getComputedStyle(navLinks).display === 'none';
-      navLinks.style.display = isHidden ? 'flex' : 'none';
+    const closeMenu = () => {
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    };
+    const openMenu = () => {
+      navLinks.classList.add('open');
+      navToggle.setAttribute('aria-expanded', 'true');
+    };
+    const toggleMenu = () => {
+      const isOpen = navLinks.classList.contains('open');
+      isOpen ? closeMenu() : openMenu();
+    };
+
+    navToggle.addEventListener('click', toggleMenu);
+    navToggle.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 640) closeMenu();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
     });
   }
 
